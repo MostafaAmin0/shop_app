@@ -9,7 +9,7 @@ class ProductOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loadedProducts= Provider.of<ProductsProvider>(context).products;
+    final loadedProducts = Provider.of<ProductsProvider>(context).products;
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Products'),
@@ -18,10 +18,13 @@ class ProductOverviewScreen extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         itemCount: loadedProducts.length,
         itemBuilder: (ctx, index) {
-          return ProductItem(
-            loadedProducts[index].id,
-            loadedProducts[index].title,
-            loadedProducts[index].imageUrl,
+          return ChangeNotifierProvider(
+            create: (ctx) => loadedProducts[index],
+            child: const ProductItem(
+              // loadedProducts[index].id,
+              // loadedProducts[index].title,
+              // loadedProducts[index].imageUrl,
+            ),
           );
         },
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
