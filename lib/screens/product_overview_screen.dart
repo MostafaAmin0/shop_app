@@ -18,13 +18,13 @@ class ProductOverviewScreen extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         itemCount: loadedProducts.length,
         itemBuilder: (ctx, index) {
-          return ChangeNotifierProvider(
-            create: (ctx) => loadedProducts[index],
+          return ChangeNotifierProvider.value(
+            value: loadedProducts[index],
             child: const ProductItem(
-              // loadedProducts[index].id,
-              // loadedProducts[index].title,
-              // loadedProducts[index].imageUrl,
-            ),
+                // loadedProducts[index].id,
+                // loadedProducts[index].title,
+                // loadedProducts[index].imageUrl,
+                ),
           );
         },
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
