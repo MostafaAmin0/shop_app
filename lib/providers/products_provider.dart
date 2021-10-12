@@ -38,11 +38,18 @@ class ProductsProvider with ChangeNotifier {
     ),
   ];
 
-  ///important to not just return _items "List" as it's pass by refrenece
-  List<Product> get products => [..._items];
+  bool _isFavorite = false;
 
-  List<Product> get favoriteProducts =>
-      _items.where((product) => product.isFav).toList();
+  ///important to not just return _items "List" as it's pass by refrenece
+  List<Product> get products {
+    _isFavorite = false;
+    return [..._items];
+  }
+
+  List<Product> get favoriteProducts {
+    _isFavorite = true;
+    return _items.where((product) => product.isFav).toList();
+  }
 
   void addProduct(Product product) {
     _items.add(product);
@@ -51,5 +58,11 @@ class ProductsProvider with ChangeNotifier {
 
   Product findById(String id) {
     return _items.firstWhere((product) => product.id == id);
+  }
+
+  void refreshFavoriteList() {
+    if (_isFavorite) {
+      notifyListeners();
+    }
   }
 }
