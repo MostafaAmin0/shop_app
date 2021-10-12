@@ -13,7 +13,8 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context);
+    final product = Provider.of<Product>(context, listen: false);
+    // print("rebuild");
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -35,16 +36,17 @@ class ProductItem extends StatelessWidget {
             product.title,
             textAlign: TextAlign.center,
           ),
-          leading: IconButton(
-            icon: Icon(
-              product.isFav
-                  ? Icons.favorite
-                  : Icons.favorite_border_outlined,
+          leading: Consumer<Product>(
+            builder: (ctx, product, child) => IconButton(
+              icon: Icon(
+                product.isFav ? Icons.favorite : Icons.favorite_border_outlined,
+              ),
+              color: Theme.of(context).colorScheme.secondary,
+              onPressed: () {
+                product.toggleFavoriteStatus();
+              },
             ),
-            color: Theme.of(context).colorScheme.secondary,
-            onPressed: () {
-              product.toggleFavoriteStatus();
-            },
+            // child:const Text('never change !'), ///you can pass it in builder function above
           ),
           trailing: IconButton(
             icon: const Icon(Icons.shopping_cart_outlined),
