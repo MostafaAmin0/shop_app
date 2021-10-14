@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/providers/cart_provider.dart';
 import 'package:shop_app/providers/products_provider.dart';
 
 import '../screens/product_detail_screen.dart';
@@ -15,6 +16,7 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
+    final cart = Provider.of<CartProvider>(context, listen: false);
     // print("rebuild");
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
@@ -45,7 +47,8 @@ class ProductItem extends StatelessWidget {
               color: Theme.of(context).colorScheme.secondary,
               onPressed: () {
                 product.toggleFavoriteStatus();
-                Provider.of<ProductsProvider>(context,listen: false).refreshFavoriteList();
+                Provider.of<ProductsProvider>(context, listen: false)
+                    .refreshFavoriteList();
               },
             ),
             // child:const Text('never change !'), ///you can pass it in builder function above
@@ -53,7 +56,9 @@ class ProductItem extends StatelessWidget {
           trailing: IconButton(
             icon: const Icon(Icons.shopping_cart_outlined),
             color: Theme.of(context).colorScheme.secondary,
-            onPressed: () {},
+            onPressed: () {
+              cart.addItem(product.id, product.title, product.price);
+            },
           ),
         ),
       ),
