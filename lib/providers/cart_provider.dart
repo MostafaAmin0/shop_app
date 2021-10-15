@@ -37,6 +37,12 @@ class CartProvider with ChangeNotifier {
     _items.forEach((key, item) => total += (item.price * item.quantity));
     return total;
   }
+
+  void removeItem(String productId){
+    _items.remove(productId);
+    notifyListeners();
+  }
+
 }
 
 class CartItem {
