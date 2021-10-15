@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../widget/badge.dart';
 import '../widget/product_grid.dart';
+import '../screens/cart_screen.dart';
 
 enum Filter {
   all,
@@ -32,7 +33,7 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
               value: cart.itemCount.toString(),
             ),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () => Navigator.of(context).pushNamed(CartScreen.route),
               icon: const Icon(Icons.shopping_cart),
             ),
           ),

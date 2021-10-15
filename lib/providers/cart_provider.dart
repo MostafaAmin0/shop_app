@@ -31,6 +31,12 @@ class CartProvider with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  double get totalPrice {
+    double total = 0;
+    _items.forEach((key, item) => total += (item.price * item.quantity));
+    return total;
+  }
 }
 
 class CartItem {
