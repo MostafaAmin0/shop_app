@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/orders_provider.dart';
 
+import '../widget/main_drawer.dart';
 import '../providers/cart_provider.dart' show CartProvider;
 import '../widget/cart_item.dart';
 
@@ -17,6 +18,7 @@ class CartScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Your cart'),
       ),
+      drawer: const MainDrawer(),
       body: Column(
         children: [
           Card(
