@@ -4,14 +4,14 @@ import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 
 class CartItem extends StatelessWidget {
-  const CartItem({
-    Key? key,
-    required this.price,
-    required this.id,
-    required this.title,
-    required this.quantity,
-    required this.productId
-  }) : super(key: key);
+  const CartItem(
+      {Key? key,
+      required this.price,
+      required this.id,
+      required this.title,
+      required this.quantity,
+      required this.productId})
+      : super(key: key);
 
   final double price;
   final String id;
@@ -35,8 +35,27 @@ class CartItem extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
       ),
       direction: DismissDirection.endToStart,
-      onDismissed: (direction){
+      onDismissed: (direction) {
         Provider.of<CartProvider>(context, listen: false).removeItem(productId);
+      },
+      confirmDismiss: (direction) {
+        return showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Sure ?'),
+            content: Text('Do you want to remove $title from order'),
+            actions: [
+              TextButton(
+                child: const Text('Yes'),
+                onPressed: () => Navigator.of(ctx).pop(true),
+              ),
+              TextButton(
+                child: const Text('No'),
+                onPressed: () =>Navigator.of(ctx).pop(false),
+              ),
+            ],
+          ),
+        );
       },
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
