@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../screens/user_product_screen.dart';
 import '../screens/cart_screen.dart';
 import '../screens/order_screen.dart';
 
@@ -34,6 +35,13 @@ class MainDrawer extends StatelessWidget {
             'Orders',
             () {
               Navigator.of(context).pushNamed(OrderScreen.route);
+            },
+          ),
+          buildTile(
+            Icons.edit,
+            'Manage Products',
+            () {
+              Navigator.of(context).pushNamed(UserProductScreen.route);
             },
           ),
         ],
