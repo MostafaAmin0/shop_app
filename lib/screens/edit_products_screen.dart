@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/products_provider.dart';
-import '../widget/main_drawer.dart';
 
 class EditProductsScreen extends StatefulWidget {
   const EditProductsScreen({Key? key}) : super(key: key);
@@ -25,6 +24,15 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
   late String imageUrl;
   late double price;
 
+  bool _editMood = false;
+
+  Map<String, String> _initialValues = {
+    'title': '',
+    'description': '',
+    'imageUrl': '',
+    'price': '',
+  };
+
   void _updateImageUrl() {
     if (!_imageUrlFocusNode.hasFocus) {
       if (!(_imageUrlController.text.startsWith('http') ||
@@ -45,6 +53,24 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (ModalRoute.of(context)!.settings.arguments != null) {
+      _editMood = true;
+      final productId = ModalRoute.of(context)!.settings.arguments as String;
+      final product =
+          Provider.of<ProductsProvider>(context).findById(productId);
+      _initialValues = {
+        'title': product.title,
+        'description': product.description,
+        'price': product.price.toString(),
+        // 'imageUrl': product.imageUrl, /// can't have both controller and inital value
+      };
+      _imageUrlController.text = product.imageUrl;
+    }
+  }
+
+  @override
   void dispose() {
     super.dispose();
     _imageUrlFocusNode.removeListener(_updateImageUrl);
@@ -60,12 +86,22 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
       return;
     }
     _form.currentState!.save();
-    Provider.of<ProductsProvider>(context, listen: false).addProduct(
-      title: title,
-      description: description,
-      price: price,
-      imageUrl: imageUrl,
-    );
+    if (_editMood) {
+      Provider.of<ProductsProvider>(context, listen: false).updateProduct(
+        id: ModalRoute.of(context)!.settings.arguments as String,
+        title: title,
+        description: description,
+        price: price,
+        imageUrl: imageUrl,
+      );
+    } else {
+      Provider.of<ProductsProvider>(context, listen: false).addProduct(
+        title: title,
+        description: description,
+        price: price,
+        imageUrl: imageUrl,
+      );
+    }
     Navigator.of(context).pop();
   }
 
@@ -89,6 +125,7 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
             child: Column(
               children: [
                 TextFormField(
+                  initialValue: _initialValues['title'],
                   decoration: const InputDecoration(labelText: 'Title'),
                   textInputAction: TextInputAction.next,
                   onFieldSubmitted: (_) {
@@ -105,6 +142,7 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                   },
                 ),
                 TextFormField(
+                  initialValue: _initialValues['price'],
                   decoration: const InputDecoration(labelText: 'Price'),
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.number,
@@ -127,6 +165,7 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                   },
                 ),
                 TextFormField(
+                  initialValue: _initialValues['description'],
                   decoration: const InputDecoration(labelText: 'DescriPtion'),
                   maxLines: 3,
                   keyboardType: TextInputType.multiline,

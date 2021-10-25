@@ -51,11 +51,12 @@ class ProductsProvider with ChangeNotifier {
     return _items.where((product) => product.isFav).toList();
   }
 
-  void addProduct(
-      {required String title,
-      required String description,
-      required double price,
-      required String imageUrl}) {
+  void addProduct({
+    required String title,
+    required String description,
+    required double price,
+    required String imageUrl,
+  }) {
     final newProduct = Product(
       id: DateTime.now().toString(),
       title: title,
@@ -69,6 +70,26 @@ class ProductsProvider with ChangeNotifier {
 
   Product findById(String id) {
     return _items.firstWhere((product) => product.id == id);
+  }
+
+  void updateProduct({
+    required String id,
+    required String title,
+    required String description,
+    required double price,
+    required String imageUrl,
+  }) {
+    final prodIndex = _items.indexWhere((prod) => prod.id == id);
+    if (prodIndex != -1) {
+      _items[prodIndex] = Product(
+        id: id,
+        title: title,
+        description: description,
+        price: price,
+        imageUrl: imageUrl,
+      );
+      notifyListeners();
+    }
   }
 
   void refreshFavoriteList() {
