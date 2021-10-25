@@ -93,6 +93,11 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
+  void deleteProduct(String id){
+    _items.removeWhere((prod) => prod.id==id);
+    notifyListeners();
+  }
+
   void refreshFavoriteList() {
     if (_isFavorite) {
       notifyListeners();
