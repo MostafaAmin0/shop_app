@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../providers/product.dart';
-import 'package:shop_app/widget/main_drawer.dart';
+import '../providers/products_provider.dart';
+import '../widget/main_drawer.dart';
 
 class EditProductsScreen extends StatefulWidget {
   const EditProductsScreen({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
   final _form = GlobalKey<FormState>();
   // var product =Product(id: null, title: '', description: '', price: 0, imageUrl: '');
   late String title;
-  late String describtion;
+  late String description;
   late String imageUrl;
   late double price;
 
@@ -59,6 +60,13 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
       return;
     }
     _form.currentState!.save();
+    Provider.of<ProductsProvider>(context, listen: false).addProduct(
+      title: title,
+      description: description,
+      price: price,
+      imageUrl: imageUrl,
+    );
+    Navigator.of(context).pop();
   }
 
   @override
@@ -73,7 +81,6 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
           ),
         ],
       ),
-      drawer: const MainDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -125,7 +132,7 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                   keyboardType: TextInputType.multiline,
                   focusNode: _describtionNode,
                   onSaved: (value) {
-                    describtion = value!;
+                    description = value!;
                   },
                   validator: (value) {
                     if (value!.isEmpty) {

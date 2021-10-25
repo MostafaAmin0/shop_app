@@ -51,8 +51,19 @@ class ProductsProvider with ChangeNotifier {
     return _items.where((product) => product.isFav).toList();
   }
 
-  void addProduct(Product product) {
-    _items.add(product);
+  void addProduct(
+      {required String title,
+      required String description,
+      required double price,
+      required String imageUrl}) {
+    final newProduct = Product(
+      id: DateTime.now().toString(),
+      title: title,
+      description: description,
+      price: price,
+      imageUrl: imageUrl,
+    );
+    _items.insert(0, newProduct);
     notifyListeners();
   }
 
