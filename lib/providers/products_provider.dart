@@ -87,6 +87,7 @@ class ProductsProvider with ChangeNotifier {
         description: description,
         price: price,
         imageUrl: imageUrl,
+        isFavorite: _items[prodIndex].isFav,
       );
       notifyListeners();
     }
