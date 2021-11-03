@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import './product.dart';
 
@@ -57,6 +60,23 @@ class ProductsProvider with ChangeNotifier {
     required double price,
     required String imageUrl,
   }) {
+    final url = Uri.https(
+      'shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app',
+      '/products.json',
+    );
+    ///don't put http at begining of your url or use
+    //final url =Uri.parse(https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/products.json); 
+    http.post(
+      url,
+      body: json.encode(
+        {
+          'title': title,
+          'describtion': description,
+          'price': price,
+          'imageUrl': imageUrl,
+        },
+      ),
+    );
     final newProduct = Product(
       id: DateTime.now().toString(),
       title: title,
@@ -93,8 +113,8 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
-  void deleteProduct(String id){
-    _items.removeWhere((prod) => prod.id==id);
+  void deleteProduct(String id) {
+    _items.removeWhere((prod) => prod.id == id);
     notifyListeners();
   }
 
