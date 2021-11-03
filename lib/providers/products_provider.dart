@@ -64,28 +64,30 @@ class ProductsProvider with ChangeNotifier {
       'shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app',
       '/products.json',
     );
+
     ///don't put http at begining of your url or use
-    //final url =Uri.parse(https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/products.json); 
-    http.post(
+    //final url =Uri.parse(https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/products.json);
+    http
+        .post(
       url,
-      body: json.encode(
-        {
-          'title': title,
-          'describtion': description,
-          'price': price,
-          'imageUrl': imageUrl,
-        },
-      ),
-    );
-    final newProduct = Product(
-      id: DateTime.now().toString(),
-      title: title,
-      description: description,
-      price: price,
-      imageUrl: imageUrl,
-    );
-    _items.insert(0, newProduct);
-    notifyListeners();
+      body: json.encode({
+        'title': title,
+        'describtion': description,
+        'price': price,
+        'imageUrl': imageUrl,
+      }),
+    )
+        .then((response) {
+      final newProduct = Product(
+        id: json.decode(response.body)['name'],
+        title: title,
+        description: description,
+        price: price,
+        imageUrl: imageUrl,
+      );
+      _items.insert(0, newProduct);
+      notifyListeners();
+    });
   }
 
   Product findById(String id) {
