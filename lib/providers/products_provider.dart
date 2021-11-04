@@ -54,7 +54,7 @@ class ProductsProvider with ChangeNotifier {
     return _items.where((product) => product.isFav).toList();
   }
 
-  void addProduct({
+  Future<void> addProduct({
     required String title,
     required String description,
     required double price,
@@ -67,7 +67,7 @@ class ProductsProvider with ChangeNotifier {
 
     ///don't put http at begining of your url or use
     //final url =Uri.parse(https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/products.json);
-    http
+    return http
         .post(
       url,
       body: json.encode({
