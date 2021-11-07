@@ -110,12 +110,29 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
         price: price,
         imageUrl: imageUrl,
       )
-          .then((_) {
-        Navigator.of(context).pop();
-        setState(() {
-          _isLoading = false;
-        });
-      });
+          .catchError((error) {
+        return showDialog<Null>(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: const Text('An error happend!'),
+                content: const Text('please check network'),
+                actions: [
+                  TextButton(
+                    child: const Text('Exit'),
+                    onPressed: () => Navigator.of(context).pop(),
+                  )
+                ],
+              );
+            });
+      }).then(
+        (_) {
+          Navigator.of(context).pop();
+          setState(() {
+            _isLoading = false;
+          });
+        },
+      );
     }
   }
 
