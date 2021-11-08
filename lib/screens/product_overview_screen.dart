@@ -6,6 +6,7 @@ import '../providers/cart_provider.dart';
 import '../widget/badge.dart';
 import '../widget/product_grid.dart';
 import '../screens/cart_screen.dart';
+import '../providers/products_provider.dart';
 
 enum Filter {
   all,
@@ -23,6 +24,12 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   bool _showFavorite = false;
 
   @override
+  void initState() {
+    super.initState();
+    Provider.of<ProductsProvider>(context, listen: false).fetchData();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -34,7 +41,8 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
               value: cart.itemCount.toString(),
             ),
             child: IconButton(
-              onPressed: () => Navigator.of(context).pushNamed(CartScreen.route),
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(CartScreen.route),
               icon: const Icon(Icons.shopping_cart),
             ),
           ),
