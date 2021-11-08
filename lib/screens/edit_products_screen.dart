@@ -91,17 +91,15 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
       _isLoading = true;
     });
     if (_editMood) {
-      Provider.of<ProductsProvider>(context, listen: false).updateProduct(
+      await Provider.of<ProductsProvider>(context, listen: false).updateProduct(
         id: ModalRoute.of(context)!.settings.arguments as String,
         title: title,
         description: description,
         price: price,
         imageUrl: imageUrl,
       );
-      setState(() {
-        _isLoading = false;
-      });
-      Navigator.of(context).pop();
+
+      ///also can make try catch here or for whole function but i won't
     } else {
       try {
         await Provider.of<ProductsProvider>(context, listen: false).addProduct(
@@ -126,13 +124,18 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
             );
           },
         );
-      } finally {
-        Navigator.of(context).pop();
-        setState(() {
-          _isLoading = false;
-        });
       }
+      // finally {
+      //   Navigator.of(context).pop();
+      //   setState(() {
+      //     _isLoading = false;
+      //   });
+      // }
     }
+    setState(() {
+      _isLoading = false;
+    });
+    Navigator.of(context).pop();
   }
 
   @override

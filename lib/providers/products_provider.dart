@@ -122,15 +122,33 @@ class ProductsProvider with ChangeNotifier {
     return _items.firstWhere((product) => product.id == id);
   }
 
-  void updateProduct({
+  Future<void> updateProduct({
     required String id,
     required String title,
     required String description,
     required double price,
     required String imageUrl,
-  }) {
+  }) async{
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex != -1) {
+      final url = Uri.https(
+        'shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app',
+        '/products/$id.json',
+      );
+      try {
+        await http.patch(
+          url,
+          body: json.encode({
+            'title': title,
+            'description': description,
+            'price': price,
+            'imageUrl': imageUrl,
+            'isFavorite': _items[prodIndex].isFav,
+          }),
+        );
+      } catch (e) {
+        rethrow;
+      }
       _items[prodIndex] = Product(
         id: id,
         title: title,
