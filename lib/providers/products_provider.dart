@@ -59,25 +59,24 @@ class ProductsProvider with ChangeNotifier {
     required String description,
     required double price,
     required String imageUrl,
-  }) {
+  }) async {
     final url = Uri.https(
       'shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app',
       '/products.json',
     );
-
     ///don't put http at begining of your url or use
     //final url =Uri.parse(https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/products.json);
-    return http
-        .post(
-      url,
-      body: json.encode({
-        'title': title,
-        'describtion': description,
-        'price': price,
-        'imageUrl': imageUrl,
-      }),
-    )
-        .then((response) {
+    
+    try {
+      final response = await http.post(
+        url,
+        body: json.encode({
+          'title': title,
+          'describtion': description,
+          'price': price,
+          'imageUrl': imageUrl,
+        }),
+      );
       final newProduct = Product(
         id: json.decode(response.body)['name'],
         title: title,
@@ -87,7 +86,9 @@ class ProductsProvider with ChangeNotifier {
       );
       _items.insert(0, newProduct);
       notifyListeners();
-    }).catchError((error) => throw error);
+    } catch (error) {
+      rethrow;
+    }
   }
 
   Product findById(String id) {

@@ -81,7 +81,7 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
     _imageUrlFocusNode.dispose();
   }
 
-  void _saveFrom() {
+  void _saveFrom() async {
     final isValid = _form.currentState!.validate();
     if (!isValid) {
       return;
@@ -103,36 +103,35 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
       });
       Navigator.of(context).pop();
     } else {
-      Provider.of<ProductsProvider>(context, listen: false)
-          .addProduct(
-        title: title,
-        description: description,
-        price: price,
-        imageUrl: imageUrl,
-      )
-          .catchError((error) {
-        return showDialog<Null>(
-            context: context,
-            builder: (_) {
-              return AlertDialog(
-                title: const Text('An error happend!'),
-                content: const Text('please check network'),
-                actions: [
-                  TextButton(
-                    child: const Text('Exit'),
-                    onPressed: () => Navigator.of(context).pop(),
-                  )
-                ],
-              );
-            });
-      }).then(
-        (_) {
-          Navigator.of(context).pop();
-          setState(() {
-            _isLoading = false;
-          });
-        },
-      );
+      try {
+        await Provider.of<ProductsProvider>(context, listen: false).addProduct(
+          title: title,
+          description: description,
+          price: price,
+          imageUrl: imageUrl,
+        );
+      } catch (error) {
+        await showDialog<Null>(
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              title: const Text('An error happend!'),
+              content: const Text('please check network'),
+              actions: [
+                TextButton(
+                  child: const Text('Exit'),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              ],
+            );
+          },
+        );
+      } finally {
+        Navigator.of(context).pop();
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
