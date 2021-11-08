@@ -128,7 +128,7 @@ class ProductsProvider with ChangeNotifier {
     required String description,
     required double price,
     required String imageUrl,
-  }) async{
+  }) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex != -1) {
       final url = Uri.https(
@@ -162,7 +162,17 @@ class ProductsProvider with ChangeNotifier {
   }
 
   void deleteProduct(String id) {
-    _items.removeWhere((prod) => prod.id == id);
+    final url = Uri.https(
+      'shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app',
+      '/products/$id.json',
+    );
+    final index = _items.indexWhere((prod) => prod.id == id);
+    final existingProduct = _items[index];
+    http.delete(url).catchError((_) {
+      _items.insert(index, existingProduct);
+      notifyListeners();
+    });
+    _items.removeAt(index);
     notifyListeners();
   }
 
