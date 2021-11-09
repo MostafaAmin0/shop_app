@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'package:shop_app/model/http_exception.dart';
+
 
 class Product with ChangeNotifier {
   final String id;
@@ -6,7 +11,7 @@ class Product with ChangeNotifier {
   final String description;
   final double price;
   final String imageUrl;
-  bool isFavorite ;
+  bool isFavorite;
 
   Product({
     required this.id,
@@ -14,13 +19,29 @@ class Product with ChangeNotifier {
     required this.description,
     required this.price,
     required this.imageUrl,
-    this.isFavorite=false,
+    this.isFavorite = false,
   });
 
   bool get isFav => isFavorite;
 
-  void toggleFavoriteStatus() {
+  Future<void> toggleFavoriteStatus(String id) async{
     isFavorite = !isFavorite;
     notifyListeners();
+    final url = Uri.https(
+      'shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app',
+      '/products/$id.json',
+    );
+    final response= await http.patch(
+      url,
+      body: json.encode({
+        'isFavorite': isFavorite,
+      }),
+    );
+    if(response.statusCode>=400){
+      isFavorite=!isFavorite;
+      notifyListeners();
+      ///throw exception here to show SnackBar /Show Dialog anywhere
+      throw HttpException('Failed to connect...');
+    }
   }
 }
