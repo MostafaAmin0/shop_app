@@ -51,6 +51,11 @@ class OrdersProvider with ChangeNotifier {
       '/orders.json',
     );
     final response = await http.get(url);
+    if (jsonDecode(response.body) == null) {
+      _orders=[];
+      notifyListeners();
+      return;
+    }
     List<OrderItem> loadedOrders = [];
     final extractedData = json.decode(response.body) as Map<String, dynamic>;
     extractedData.forEach((orderId, orderData) {

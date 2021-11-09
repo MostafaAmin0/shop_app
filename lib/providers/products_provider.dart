@@ -97,6 +97,9 @@ class ProductsProvider with ChangeNotifier {
   Future<void> fetchData() async {
     try {
       final response = await http.get(_url);
+      if (jsonDecode(response.body)) {
+        return;
+      }
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
@@ -171,8 +174,8 @@ class ProductsProvider with ChangeNotifier {
     _items.removeAt(index);
     notifyListeners();
     final response = await http.delete(url);
-    if(response.statusCode>=400){
-      _items.insert(index,existingProduct);
+    if (response.statusCode >= 400) {
+      _items.insert(index, existingProduct);
       notifyListeners();
       throw HttpException('Failed to delete..');
     }
