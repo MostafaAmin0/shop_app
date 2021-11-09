@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../model/http_exception.dart';
 
 import './product.dart';
 
@@ -161,19 +162,21 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
-  void deleteProduct(String id) {
+  Future<void> deleteProduct(String id) async {
     final url = Uri.https(
       'shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app',
       '/products/$id.json',
     );
     final index = _items.indexWhere((prod) => prod.id == id);
     final existingProduct = _items[index];
-    http.delete(url).catchError((_) {
-      _items.insert(index, existingProduct);
-      notifyListeners();
-    });
     _items.removeAt(index);
     notifyListeners();
+    final response = await http.delete(url);
+    if(response.statusCode>=400){
+      _items.insert(index,existingProduct);
+      notifyListeners();
+      throw HttpException('Failed to delete..');
+    }
   }
 
   void refreshFavoriteList() {
