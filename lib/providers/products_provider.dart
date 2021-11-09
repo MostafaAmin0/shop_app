@@ -97,7 +97,9 @@ class ProductsProvider with ChangeNotifier {
   Future<void> fetchData() async {
     try {
       final response = await http.get(_url);
-      if (jsonDecode(response.body)) {
+      if (jsonDecode(response.body) == null) {
+        _items=[];
+        notifyListeners();
         return;
       }
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
