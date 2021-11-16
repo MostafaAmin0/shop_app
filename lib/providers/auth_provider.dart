@@ -6,9 +6,22 @@ import 'package:http/http.dart' as http;
 import '../model/http_exception.dart';
 
 class AuthProvider with ChangeNotifier {
-  late String _tpken;
-  late String _exipiryDate;
-  late String _userId;
+  String? _token;
+  DateTime? _exipiryDate;
+  String? _userId;
+
+  bool get isAuth {
+    return _token != null;
+  }
+
+  String? get token {
+    if (_token != null &&
+        _exipiryDate != null &&
+        _exipiryDate!.isAfter(DateTime.now())) {
+      return _token;
+    }
+    return null;
+  }
 
   Future<void> signUp(String email, String password) async {
     ///await or return should work probably
@@ -39,5 +52,11 @@ class AuthProvider with ChangeNotifier {
     if (responseData['error'] != null) {
       throw HttpException(responseData['error']['message']);
     }
+    _token = responseData['idToken'];
+    _userId = responseData['localId'];
+    _exipiryDate = DateTime.now().add(
+      Duration(seconds: int.parse(responseData['expiresIn'])),
+    );
+    notifyListeners();
   }
 }

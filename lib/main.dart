@@ -37,21 +37,25 @@ class MyApp extends StatelessWidget {
           value: AuthProvider(),
         ),
       ],
-      child: MaterialApp(
-        title: 'Shop App',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple)
-              .copyWith(secondary: Colors.deepOrange),
-          fontFamily: 'Lato',
+      child: Consumer<AuthProvider>(
+        builder: (ctx, auth, _) => MaterialApp(
+          title: 'Shop App',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple)
+                .copyWith(secondary: Colors.deepOrange),
+            fontFamily: 'Lato',
+          ),
+          routes: {
+            '/': (ctx) => auth.isAuth
+                ? const ProductOverviewScreen()
+                : const AuthScreen(),
+            ProductDetailScreen.route: (ctx) => const ProductDetailScreen(),
+            CartScreen.route: (ctx) => const CartScreen(),
+            OrderScreen.route: (ctx) => const OrderScreen(),
+            UserProductScreen.route: (ctx) => const UserProductScreen(),
+            EditProductsScreen.route: (ctx) => const EditProductsScreen(),
+          },
         ),
-        routes: {
-          '/': (ctx) => const AuthScreen(),
-          ProductDetailScreen.route: (ctx) => const ProductDetailScreen(),
-          CartScreen.route: (ctx) => const CartScreen(),
-          OrderScreen.route: (ctx) => const OrderScreen(),
-          UserProductScreen.route: (ctx) => const UserProductScreen(),
-          EditProductsScreen.route: (ctx) => const EditProductsScreen(),
-        },
       ),
     );
   }
