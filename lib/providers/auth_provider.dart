@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/Foundation.dart';
 import 'package:http/http.dart' as http;
 
+import '../model/http_exception.dart';
+
 class AuthProvider with ChangeNotifier {
   late String _tpken;
   late String _exipiryDate;
@@ -33,6 +35,9 @@ class AuthProvider with ChangeNotifier {
         },
       ),
     );
-    print(json.decode(response.body));
+    final responseData = json.decode(response.body);
+    if (responseData['error'] != null) {
+      throw HttpException(responseData['error']['message']);
+    }
   }
 }
