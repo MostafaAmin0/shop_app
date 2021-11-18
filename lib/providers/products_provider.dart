@@ -44,13 +44,9 @@ class ProductsProvider with ChangeNotifier {
   // ];
 
   bool _isFavorite = false;
+  String authToken;
 
-  ///don't put http at begining of your url or use
-  //final url =Uri.parse(https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/products.json);
-  final _url = Uri.https(
-    'shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app',
-    '/products.json',
-  );
+  ProductsProvider(this.authToken);
 
   ///important to not just return _items "List" as it's pass by refrenece
   List<Product> get products {
@@ -70,8 +66,15 @@ class ProductsProvider with ChangeNotifier {
     required String imageUrl,
   }) async {
     try {
+      ///don't put http at begining of your url or use
+      // final url = Uri.https(
+      //   'shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app',
+      //   '/products.json?auth=$authToken',
+      // );
+      final url = Uri.parse(
+          'https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/products.json?auth=$authToken');
       final response = await http.post(
-        _url,
+        url,
         body: json.encode({
           'title': title,
           'description': description,
@@ -96,9 +99,12 @@ class ProductsProvider with ChangeNotifier {
 
   Future<void> fetchData() async {
     try {
-      final response = await http.get(_url);
+      final url = Uri.parse(
+        'https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/products.json?auth=$authToken',
+      );
+      final response = await http.get(url);
       if (jsonDecode(response.body) == null) {
-        _items=[];
+        _items = [];
         notifyListeners();
         return;
       }
@@ -137,9 +143,8 @@ class ProductsProvider with ChangeNotifier {
   }) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex != -1) {
-      final url = Uri.https(
-        'shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app',
-        '/products/$id.json',
+      final url = Uri.parse(
+        'https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/products/$id.json?auth=$authToken',
       );
       try {
         await http.patch(
@@ -167,9 +172,8 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) async {
-    final url = Uri.https(
-      'shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app',
-      '/products/$id.json',
+    final url = Uri.parse(
+      'https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/products/$id.json?auth=$authToken',
     );
     final index = _items.indexWhere((prod) => prod.id == id);
     final existingProduct = _items[index];
