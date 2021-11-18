@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop_app/model/http_exception.dart';
 
-
 class Product with ChangeNotifier {
   final String id;
   final String title;
@@ -24,22 +23,22 @@ class Product with ChangeNotifier {
 
   bool get isFav => isFavorite;
 
-  Future<void> toggleFavoriteStatus(String id) async{
+  Future<void> toggleFavoriteStatus(String id, String authToken) async {
     isFavorite = !isFavorite;
     notifyListeners();
-    final url = Uri.https(
-      'shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app',
-      '/products/$id.json',
+    final url = Uri.parse(
+      'https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/products/$id.json?auth=$authToken',
     );
-    final response= await http.patch(
+    final response = await http.patch(
       url,
       body: json.encode({
         'isFavorite': isFavorite,
       }),
     );
-    if(response.statusCode>=400){
-      isFavorite=!isFavorite;
+    if (response.statusCode >= 400) {
+      isFavorite = !isFavorite;
       notifyListeners();
+
       ///throw exception here to show SnackBar /Show Dialog anywhere
       throw HttpException('Failed to connect...');
     }

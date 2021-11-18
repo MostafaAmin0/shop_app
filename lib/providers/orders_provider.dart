@@ -12,10 +12,13 @@ class OrdersProvider with ChangeNotifier {
 
   int get orderCount => _orders.length;
 
+  String authToken;
+
+  OrdersProvider(this.authToken);
+
   Future<void> addOrder(List<CartItem> cartItems, double total) async {
-    final url = Uri.https(
-      'shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app',
-      '/orders.json',
+    final url = Uri.parse(
+      'https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/orders.json?auth=$authToken',
     );
     final date = DateTime.now();
     final response = await http.post(
@@ -46,13 +49,12 @@ class OrdersProvider with ChangeNotifier {
   }
 
   Future<void> fetchOrders() async {
-    final url = Uri.https(
-      'shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app',
-      '/orders.json',
+    final url = Uri.parse(
+      'https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/orders.json?auth=$authToken',
     );
     final response = await http.get(url);
     if (jsonDecode(response.body) == null) {
-      _orders=[];
+      _orders = [];
       notifyListeners();
       return;
     }
