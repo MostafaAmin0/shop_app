@@ -13,12 +13,13 @@ class OrdersProvider with ChangeNotifier {
   int get orderCount => _orders.length;
 
   String authToken;
+  String userId;
 
-  OrdersProvider(this.authToken);
+  OrdersProvider(this.authToken, this.userId);
 
   Future<void> addOrder(List<CartItem> cartItems, double total) async {
     final url = Uri.parse(
-      'https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/orders.json?auth=$authToken',
+      'https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/orders/$userId.json?auth=$authToken',
     );
     final date = DateTime.now();
     final response = await http.post(
@@ -50,7 +51,7 @@ class OrdersProvider with ChangeNotifier {
 
   Future<void> fetchOrders() async {
     final url = Uri.parse(
-      'https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/orders.json?auth=$authToken',
+      'https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/orders/$userId.json?auth=$authToken',
     );
     final response = await http.get(url);
     if (jsonDecode(response.body) == null) {
@@ -73,16 +74,16 @@ class OrdersProvider with ChangeNotifier {
             title: prodData['title'],
           ),
         );
-        loadedOrders.insert(
-          0,
-          OrderItem(
-            id: orderId,
-            date: DateTime.parse(orderData['date']),
-            products: products,
-            total: orderData['total'],
-          ),
-        );
       }
+      loadedOrders.insert(
+        0,
+        OrderItem(
+          id: orderId,
+          date: DateTime.parse(orderData['date']),
+          products: products,
+          total: orderData['total'],
+        ),
+      );
     });
     _orders = loadedOrders;
     notifyListeners();
