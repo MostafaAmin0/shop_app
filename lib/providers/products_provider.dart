@@ -81,6 +81,7 @@ class ProductsProvider with ChangeNotifier {
           'description': description,
           'price': price,
           'imageUrl': imageUrl,
+          'creatorId': userId,
           // 'isFavorite': false,
         }),
       );
@@ -98,10 +99,12 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchData() async {
+  Future<void> fetchData([bool isFiltered = false]) async {
     try {
+      final filteredString =
+          isFiltered ? 'orderBy="creatorId"&equalTo="$userId"' : '';
       final url = Uri.parse(
-        'https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/products.json?auth=$authToken',
+        'https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/products.json?auth=$authToken&$filteredString',
       );
       final response = await http.get(url);
       if (jsonDecode(response.body) == null) {
