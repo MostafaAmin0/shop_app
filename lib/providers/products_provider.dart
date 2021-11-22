@@ -45,8 +45,9 @@ class ProductsProvider with ChangeNotifier {
 
   bool _isFavorite = false;
   String authToken;
+  String userId;
 
-  ProductsProvider(this.authToken);
+  ProductsProvider(this.authToken, this.userId);
 
   ///important to not just return _items "List" as it's pass by refrenece
   List<Product> get products {
@@ -80,7 +81,7 @@ class ProductsProvider with ChangeNotifier {
           'description': description,
           'price': price,
           'imageUrl': imageUrl,
-          'isFavorite': false,
+          // 'isFavorite': false,
         }),
       );
       final newProduct = Product(
@@ -109,6 +110,19 @@ class ProductsProvider with ChangeNotifier {
         return;
       }
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
+
+      final userFavoriteUrl = Uri.parse(
+        'https://shop-app-ef819-default-rtdb.europe-west1.firebasedatabase.app/userFavorite/$userId.json?auth=$authToken',
+      );
+      final favoriteResponse = await http.get(userFavoriteUrl);
+      // final Map favoriteData;
+      // if (jsonDecode(favoriteResponse.body) == null) {
+      //   favoriteData = {};
+      // } else {
+      //   favoriteData = json.decode(favoriteResponse.body);
+      // }
+      final favoriteData = json.decode(favoriteResponse.body);
+
       List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
         loadedProducts.insert(
@@ -119,7 +133,9 @@ class ProductsProvider with ChangeNotifier {
             imageUrl: prodData['imageUrl'],
             price: prodData['price'],
             title: prodData['title'],
-            isFavorite: prodData['isFavorite'],
+            // isFavorite: prodData['isFavorite'],
+            isFavorite:
+                favoriteData == null ? false : favoriteData[prodId] ?? false,
           ),
         );
         _items = loadedProducts;

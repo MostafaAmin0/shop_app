@@ -23,6 +23,8 @@ class AuthProvider with ChangeNotifier {
     return null;
   }
 
+  String get userId => _userId ?? '';
+
   Future<void> signUp(String email, String password) async {
     ///await or return should work probably
     await _authenticate(email, password, 'signUp');
