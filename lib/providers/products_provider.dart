@@ -44,8 +44,8 @@ class ProductsProvider with ChangeNotifier {
   // ];
 
   bool _isFavorite = false;
-  String authToken;
-  String userId;
+  String? authToken;
+  String? userId;
 
   ProductsProvider(this.authToken, this.userId);
 

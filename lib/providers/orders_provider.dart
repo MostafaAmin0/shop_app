@@ -12,8 +12,8 @@ class OrdersProvider with ChangeNotifier {
 
   int get orderCount => _orders.length;
 
-  String authToken;
-  String userId;
+  String? authToken;
+  String? userId;
 
   OrdersProvider(this.authToken, this.userId);
 
