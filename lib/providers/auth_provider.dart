@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:flutter/Foundation.dart';
 import 'package:http/http.dart' as http;
@@ -9,6 +10,7 @@ class AuthProvider with ChangeNotifier {
   String? _token;
   DateTime? _exipiryDate;
   String? _userId;
+  Timer? _authTimer;
 
   bool get isAuth {
     return _token != null;
@@ -59,6 +61,7 @@ class AuthProvider with ChangeNotifier {
     _exipiryDate = DateTime.now().add(
       Duration(seconds: int.parse(responseData['expiresIn'])),
     );
+    _autoLogOut();
     notifyListeners();
   }
 
@@ -66,6 +69,18 @@ class AuthProvider with ChangeNotifier {
     _token = null;
     _userId = null;
     _exipiryDate = null;
+    if (_authTimer != null) {
+      _authTimer!.cancel();
+      _authTimer = null;
+    }
     notifyListeners();
+  }
+
+  void _autoLogOut() {
+    if (_authTimer != null) {
+      _authTimer!.cancel();
+    }
+    final allowedTime = _exipiryDate!.difference(DateTime.now()).inSeconds;
+    _authTimer = Timer(Duration(seconds: allowedTime), logOut);
   }
 }
