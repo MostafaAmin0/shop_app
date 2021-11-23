@@ -53,11 +53,16 @@ class MyApp extends StatelessWidget {
             '/': (ctx) => auth.isAuth
                 ? const ProductOverviewScreen()
                 : const AuthScreen(),
-            ProductDetailScreen.route: (ctx) => const ProductDetailScreen(),
-            CartScreen.route: (ctx) => const CartScreen(),
-            OrderScreen.route: (ctx) => const OrderScreen(),
-            UserProductScreen.route: (ctx) => const UserProductScreen(),
-            EditProductsScreen.route: (ctx) => const EditProductsScreen(),
+            ProductDetailScreen.route: (ctx) =>
+                auth.isAuth ? const ProductDetailScreen() : const AuthScreen(),
+            CartScreen.route: (ctx) =>
+                auth.isAuth ? const CartScreen() : const AuthScreen(),
+            OrderScreen.route: (ctx) =>
+                auth.isAuth ? const OrderScreen() : const AuthScreen(),
+            UserProductScreen.route: (ctx) =>
+                auth.isAuth ? const UserProductScreen() : const AuthScreen(),
+            EditProductsScreen.route: (ctx) =>
+                auth.isAuth ? const EditProductsScreen() : const AuthScreen(),
           },
         ),
       ),
