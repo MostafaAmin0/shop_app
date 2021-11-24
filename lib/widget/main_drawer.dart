@@ -52,6 +52,7 @@ class MainDrawer extends StatelessWidget {
             'Log Out',
             () {
               Navigator.of(context).pop();
+              Navigator.of(context).pushReplacementNamed('/');
               Provider.of<AuthProvider>(context, listen: false).logOut();
             },
           ),
