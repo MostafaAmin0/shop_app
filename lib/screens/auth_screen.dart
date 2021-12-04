@@ -107,6 +107,7 @@ class _AuthCardState extends State<AuthCard>
   late AnimationController _controller;
   late Animation<Size> _heightAnimation;
   late Animation<double> _opacityAnimation;
+  late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
@@ -126,6 +127,14 @@ class _AuthCardState extends State<AuthCard>
     _opacityAnimation = Tween<double>(begin: 0, end: 1.0).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeIn),
     );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, -1),
+      end: const Offset(0, 0),
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.bounceIn,
+    ));
   }
 
   @override
@@ -269,18 +278,21 @@ class _AuthCardState extends State<AuthCard>
                   ),
                   child: FadeTransition(
                     opacity: _opacityAnimation,
-                    child: TextFormField(
-                      enabled: _authMode == AuthMode.signup,
-                      decoration:
-                          const InputDecoration(labelText: 'Confirm Password'),
-                      obscureText: true,
-                      validator: _authMode == AuthMode.signup
-                          ? (value) {
-                              if (value != _passwordController.text) {
-                                return 'Passwords do not match!';
+                    child: SlideTransition(
+                      position: _slideAnimation,
+                      child: TextFormField(
+                        enabled: _authMode == AuthMode.signup,
+                        decoration: const InputDecoration(
+                            labelText: 'Confirm Password'),
+                        obscureText: true,
+                        validator: _authMode == AuthMode.signup
+                            ? (value) {
+                                if (value != _passwordController.text) {
+                                  return 'Passwords do not match!';
+                                }
                               }
-                            }
-                          : null,
+                            : null,
+                      ),
                     ),
                   ),
                 ),
