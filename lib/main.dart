@@ -13,6 +13,7 @@ import './providers/cart_provider.dart';
 import './screens/user_product_screen.dart';
 import './screens/edit_products_screen.dart';
 import '../screens/auth_screen.dart';
+import '../helper/custom_route.dart';
 
 void main() {
   runApp(const MyApp());
@@ -49,6 +50,12 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple)
                 .copyWith(secondary: Colors.deepOrange),
             fontFamily: 'Lato',
+            pageTransitionsTheme: PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: CustomTransitionBuilder(),
+                TargetPlatform.iOS: CustomTransitionBuilder(),
+              },
+            ),
           ),
           routes: {
             '/': (ctx) => auth.isAuth
